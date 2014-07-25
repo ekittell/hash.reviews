@@ -1,0 +1,14 @@
+{% include "HashReviewsTransactionReviewBundle:Default:header.html.twig" %}
+
+<h2>Rate and review the transaction.</h2>
+
+{% include "HashReviewsTransactionReviewBundle:Default:flashbag.html.twig" %}
+
+{% if existing_link %}
+	<p>A review already exists though you may replace it if you like. <a href="{{ existing_link }}" target="_blank">Read Existing Review</a></p> 
+
+{% endif %}
+
+{{ form(form) }}
+
+{% include "HashReviewsTransactionReviewBundle:Default:footer.html.twig" %}

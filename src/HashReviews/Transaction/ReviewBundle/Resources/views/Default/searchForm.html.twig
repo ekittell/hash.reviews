@@ -1,0 +1,11 @@
+<div class="form-group">
+<label for="form_tx_hash" class="required">Search</label>
+	<input class="form-control" type="text" id="query" placeholder="address or transaction hash" value="{% if query is defined %}{{ query }}{% endif %}">
+</div>
+
+<script type="text/javascript">
+	$("#query").change(function() {
+	  	window.location = "{{ app.request.baseUrl }}/search/" + $("#query").val();
+	});
+
+</script>

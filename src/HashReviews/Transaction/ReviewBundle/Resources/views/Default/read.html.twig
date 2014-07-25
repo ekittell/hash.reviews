@@ -1,0 +1,48 @@
+{% include "HashReviewsTransactionReviewBundle:Default:header.html.twig" %}
+
+<h2>Review</h2>
+<p>Date: {{ review.createdAt|date('m/d/Y') }}
+{% if review.updatedAt < review.createdAt %}
+(updated: {{ review.updatedAt|date('m/d/Y') }})
+{% endif %}
+</p>
+
+
+
+<p>Rating: {{ review.rating }}/5</p>
+
+<p>{{ review.review|nl2br }}</p>
+<hr />
+<h4>Transaction Details:</h4>
+<p>Date: {{ review.txDate|date('m/d/Y') }}</p>
+<p>Estimated Amount: {{ review.txAmount }} BTC</p>
+<p>Hash: {{ review.txHash }}</p>
+<p>Address: {{ review.reAddress }}<br />
+{% if review.re == 'to' %}
+	(This review is authored by someone who sent bitcoin to this address.)
+{% else %}
+	(This review is authored by someone who received bitcoin from this address.)
+{% endif %}
+</p>
+<p>View on: <a href="https://blockchain.info/tx/{{ review.txHash }}">BlockChain.info</a>
+
+
+
+
+<div>
+<h3>Full Review Message:</h3>
+<p>You can verify this message and signature with any bitcoind instance, or with the wallet tools at <a href="https://blockchain.info/wallet">BlockChain.info</a></p>
+<pre>
+{{ review.reviewMessage }}
+</pre>
+</div>
+
+<p>Message Hash:<br /><pre>{{ review.reviewMessageHash }}</pre></p>
+
+<p>Signature:<br /><pre>{{ review.signature }}</pre></p>
+
+<p>Review Author / Signed By:<br /><pre>{{ review.reviewerAddress }}</pre></p>
+
+{% include "HashReviewsTransactionReviewBundle:Default:footer.html.twig" %}
+
+

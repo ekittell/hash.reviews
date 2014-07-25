@@ -1,0 +1,18 @@
+index:
+    path:     /
+    defaults: { _controller: HashReviewsTransactionReviewBundle:Default:index }
+enter_review:
+    path:     /review
+    defaults: { _controller: HashReviewsTransactionReviewBundle:Default:review }
+sign_hash:
+    path:     /sign
+    defaults: { _controller: HashReviewsTransactionReviewBundle:Default:sign }
+success:
+    path:     /success
+    defaults: { _controller: HashReviewsTransactionReviewBundle:Default:success }
+read:
+    path:     /{re}/{tx_hash}/{from_address}/{to_address}
+    defaults: { _controller: HashReviewsTransactionReviewBundle:Default:read }
+search:
+    path:     /search/{search_query}
+    defaults: { _controller: HashReviewsTransactionReviewBundle:Default:search }

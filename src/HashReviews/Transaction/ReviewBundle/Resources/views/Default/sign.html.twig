@@ -1,0 +1,13 @@
+{% include "HashReviewsTransactionReviewBundle:Default:header.html.twig" %}
+
+<h2>Sign Your Review.</h2>
+
+<p>Copy the entire hash and use your wallet to sign it as a message.  When you have the signature paste it below.</p>
+
+<p>In CoinBase go to <a href="https://coinbase.com/addresses" target="_blank">Settings > Addresses</a>, find the address that matches the {{ review.re }} Address of your transaction, click Details and on the next page click the "sign a message link" 
+
+{% include "HashReviewsTransactionReviewBundle:Default:flashbag.html.twig" %}
+
+{{ form(form) }}
+
+{% include "HashReviewsTransactionReviewBundle:Default:footer.html.twig" %}

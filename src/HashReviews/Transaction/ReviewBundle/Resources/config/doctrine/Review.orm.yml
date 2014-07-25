@@ -1,0 +1,50 @@
+HashReviews\Transaction\ReviewBundle\Entity\Review:
+    type: entity
+    table: review
+    id:
+        tx_hash:
+            type: string
+            length: 64
+        from_address:
+            type: string
+            length: 34
+        to_address:
+            type: string
+            length: 34
+        re: 
+            type: string
+            length: 8
+    fields:
+        tx_date:
+            type: datetime
+        tx_amount:
+            type: decimal
+        rating:
+            type: smallint
+        review:
+            type: text
+        version:
+            type: string
+            length: 20 
+        review_message:
+            type: text
+        random:
+            type: string
+            length: 256
+        review_message_hash:
+            type: string
+            length: 256
+        signature:
+            type: string
+            length: 256
+            nullable: TRUE
+        status:
+            type: string
+            length: 20
+        created_at:
+            type: datetime
+            nullable: TRUE
+        updated_at:
+            type: datetime
+            nullable: TRUE
+        

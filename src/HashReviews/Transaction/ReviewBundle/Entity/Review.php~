@@ -1,0 +1,9 @@
+<?php
+namespace HashReviews\Transaction\ReviewBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+class Review
+{
+
+}

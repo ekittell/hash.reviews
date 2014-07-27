@@ -199,9 +199,6 @@ class DefaultController extends Controller
 
 
 
-
-
-
 	    $form = $this->createFormBuilder($review)
             ->add('rating', 'choice', array(
             		'choices' => array(1,2,3,4,5),
@@ -373,7 +370,7 @@ class DefaultController extends Controller
 			    WHERE
 			    (r.re = 'to' AND r.to_address = :to_address) OR
 			    (r.re = 'from' AND r.from_address = :from_address)
-			    ORDER BY r.tx_date DESC"
+			    ORDER BY r.created_at DESC"
 			)->setParameter('to_address', $search_query)
 			 ->setParameter('from_address', $search_query);
     	}

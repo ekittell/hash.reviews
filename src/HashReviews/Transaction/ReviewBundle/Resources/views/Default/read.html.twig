@@ -18,9 +18,9 @@
 <p>Estimated Amount: {{ review.txAmount }} BTC</p>
 <p>Address: {{ review.reAddress }}<br />
 {% if review.re == 'to' %}
-	(This review is authored by someone who sent bitcoin to this address.)
+	(This review was authored by someone who sent bitcoin to this address.)
 {% else %}
-	(This review is authored by someone who received bitcoin from this address.)
+	(This review was authored by someone who received bitcoin from this address.)
 {% endif %}
 </p>
 <div id="moreLink">
@@ -29,10 +29,7 @@
 <div id="moreDetails" style="display: none">
 <p>Hash: {{ review.txHash }}</p>
 <p>View on: <a href="https://blockchain.info/tx/{{ review.txHash }}">BlockChain.info</a>
-<p><a href="{{ revise_link }}">Revise Review</a> (you'll need to be able to sign with address: <b>{{ review.authorAddress }}</b>)</p>
-
-
-
+<p><a href="{{ revise_link }}">Revise Review</a> (You'll need to be able to sign it with address: <b>{{ review.authorAddress }}</b>)</p>
 
 
 <h3>Full Review Message:</h3>

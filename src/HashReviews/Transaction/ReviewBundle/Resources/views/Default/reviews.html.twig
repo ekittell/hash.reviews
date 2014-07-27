@@ -1,14 +1,25 @@
 {% include "HashReviewsTransactionReviewBundle:Default:header.html.twig" %}
 
-<h2>Search Results</h2>
-<p>For {% if is_tx %} transaction hash {% else %} bitcoin address {% endif %}: {{ query }}</p>
+<h2>Reviews</h2>
+<h4>For {% if is_tx %} transaction hash {% else %} bitcoin address {% endif %}: {{ query }}</h4>
 
 {% include "HashReviewsTransactionReviewBundle:Default:flashbag.html.twig" %}
 
-<ul>
+{% if reviews %}
+<table class="table table-striped">
+<tr><th>Date</th><th>Rating</th><th>Review</th></tr>
 {% for review in reviews %}
-    <li style="height: 20px; overflow: hidden;"><a href="{{ app.request.baseUrl }}/{{review.re}}/{{review.txHash}}/{{review.fromAddress}}/{{review.toAddress}}">{{review.rating}}/5 - {{ review.review }}</a></li>
+    <tr>
+    	<td>{{ review.createdAt|date('m/d/Y') }}</td>
+    	<td>{{review.rating}}/5</td>
+    	<td><div style="height: 20px; overflow: hidden;">{{ review.review }}</div>
+    		<a href="{{ app.request.baseUrl }}/{{review.re}}/{{review.txHash}}/{{review.fromAddress}}/{{review.toAddress}}">read more</a>
+    	</td>
+    </tr>
+
 {% endfor %}
-</ul>
+
+</table>
+{% endif %}
 
 {% include "HashReviewsTransactionReviewBundle:Default:footer.html.twig" %}

@@ -1,3 +1,6 @@
+init:
+    path:     /init/{re}/{tx_hash}/{from_address}/{to_address}/{sign_link}
+    defaults: { _controller: HashReviewsTransactionReviewBundle:Default:init, sign_link: null }
 index:
     path:     /
     defaults: { _controller: HashReviewsTransactionReviewBundle:Default:index }
@@ -13,6 +16,6 @@ success:
 read:
     path:     /{re}/{tx_hash}/{from_address}/{to_address}
     defaults: { _controller: HashReviewsTransactionReviewBundle:Default:read }
-search:
-    path:     /search/{search_query}
-    defaults: { _controller: HashReviewsTransactionReviewBundle:Default:search }
+reviews:
+    path:     /reviews/{search_query}
+    defaults: { _controller: HashReviewsTransactionReviewBundle:Default:reviews }

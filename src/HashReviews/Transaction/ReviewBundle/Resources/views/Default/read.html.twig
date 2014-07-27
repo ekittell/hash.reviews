@@ -16,7 +16,6 @@
 <h4>Transaction Details:</h4>
 <p>Date: {{ review.txDate|date('m/d/Y') }}</p>
 <p>Estimated Amount: {{ review.txAmount }} BTC</p>
-<p>Hash: {{ review.txHash }}</p>
 <p>Address: {{ review.reAddress }}<br />
 {% if review.re == 'to' %}
 	(This review is authored by someone who sent bitcoin to this address.)
@@ -24,24 +23,34 @@
 	(This review is authored by someone who received bitcoin from this address.)
 {% endif %}
 </p>
+<div id="moreLink">
+	<a href="javascript:;" onclick="$('#moreDetails').toggle();$('#moreLink').toggle();">more details</a>
+</div>
+<div id="moreDetails" style="display: none">
+<p>Hash: {{ review.txHash }}</p>
 <p>View on: <a href="https://blockchain.info/tx/{{ review.txHash }}">BlockChain.info</a>
+<p><a href="{{ revise_link }}">Revise Review</a> (you'll need to be able to sign with address: <b>{{ review.authorAddress }}</b>)</p>
 
 
 
 
-<div>
+
 <h3>Full Review Message:</h3>
-<p>You can verify this message and signature with any bitcoind instance, or with the wallet tools at <a href="https://blockchain.info/wallet">BlockChain.info</a></p>
+<p>You can verify this message and signature with any bitcoind instance, or with the wallet tools at <a href="https://blockchain.info/wallet">BlockChain.info</a><br />  Version 1.0 hash is sha256 twice.</p>
 <pre>
 {{ review.reviewMessage }}
 </pre>
-</div>
+
 
 <p>Message Hash:<br /><pre>{{ review.reviewMessageHash }}</pre></p>
 
 <p>Signature:<br /><pre>{{ review.signature }}</pre></p>
 
-<p>Review Author / Signed By:<br /><pre>{{ review.reviewerAddress }}</pre></p>
+<p>Review Author / {% if review.re == 'to' %}Bitcoin Sender{% else %}Bitcoin Receiver{% endif %} / Signed By :<br /><pre>{{ review.authorAddress }}</pre></p>
+
+<p><a href="javascript:;" onclick="$('#moreDetails').toggle();$('#moreLink').toggle();">less details</a></p>
+
+</div>
 
 {% include "HashReviewsTransactionReviewBundle:Default:footer.html.twig" %}
 

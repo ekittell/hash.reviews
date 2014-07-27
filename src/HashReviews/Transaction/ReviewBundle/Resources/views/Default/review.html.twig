@@ -1,14 +1,20 @@
 {% include "HashReviewsTransactionReviewBundle:Default:header.html.twig" %}
 
-<h2>Rate and review the transaction.</h2>
+<h2>Rate and Review a transaction.</h2>
 
 {% include "HashReviewsTransactionReviewBundle:Default:flashbag.html.twig" %}
 
 {% if existing_link %}
-	<p>A review already exists though you may replace it if you like. <a href="{{ existing_link }}" target="_blank">Read Existing Review</a></p> 
+	<p>A review already exists though you may replace it if you'd like. <a href="{{ existing_link }}" target="_blank">Read Existing Review</a></p> 
 
 {% endif %}
 
 {{ form(form) }}
+<p></p>
+
+<p>Please provide an accurate rating and review.  You  may address the {% if review.re == 'to' %}goods or services received{% else %}client/customer{% endif %} and/or the transaction itself.</p>
+<p>If you are being bribed to make your review more postive and you want to get something for nothing then you could do it and then change it back later but beware of reprecussions.  Better yet just keep it real!</p>  
+
+<p>If you're a '<a href="http://en.wikipedia.org/wiki/Shill" />shill</a>' we'll know it.</p>
 
 {% include "HashReviewsTransactionReviewBundle:Default:footer.html.twig" %}

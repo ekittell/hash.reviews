@@ -8,7 +8,7 @@ class Review
 
     // custom methods
 
-    public function getReviewerAddress() {
+    public function getAuthorAddress() {
         if($this->getRe() == "to")
             return $this->getFromAddress();
         elseif($this->getRe() == "from")
@@ -490,5 +490,33 @@ class Review
     public function getUpdatedAt()
     {
         return $this->updated_at;
+    }
+    /**
+     * @var string
+     */
+    private $sign_link;
+
+
+    /**
+     * Set sign_link
+     *
+     * @param string $signLink
+     * @return Review
+     */
+    public function setSignLink($signLink)
+    {
+        $this->sign_link = $signLink;
+
+        return $this;
+    }
+
+    /**
+     * Get sign_link
+     *
+     * @return string 
+     */
+    public function getSignLink()
+    {
+        return $this->sign_link;
     }
 }

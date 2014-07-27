@@ -8,6 +8,12 @@
 {% endspaceless %}
 {% endblock form_row %}
 
+{% block button_row -%}
+    <div style="display: inline-block; margin-right: 15px">
+        {{- form_widget(form) -}}
+    </div>
+{%- endblock button_row %}
+
 
 {% block form_widget_simple %}
     {% set type = type|default('text') %}
@@ -15,7 +21,7 @@
 {% endblock form_widget_simple %}
 
 {% block button_widget %}
-        {% if label is empty -%}
+    {% if label is empty -%}
         {% set label = name|humanize %}
     {%- endif -%}
     <button class="btn btn-default" type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>

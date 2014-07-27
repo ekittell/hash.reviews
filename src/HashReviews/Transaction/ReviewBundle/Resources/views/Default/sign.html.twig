@@ -4,7 +4,14 @@
 
 <p>Copy the entire hash and use your wallet to sign it as a message.  When you have the signature paste it below.</p>
 
-<p>In CoinBase go to <a href="https://coinbase.com/addresses" target="_blank">Settings > Addresses</a>, find the address that matches the {{ review.re }} Address of your transaction, click Details and on the next page click the "sign a message link" 
+{% if review.signLink %}
+<a href="{{ review.signLink }}">Click to get your signature</a>
+{% else %}
+<p>In CoinBase go to <a href="https://coinbase.com/addresses" target="_blank">Settings > Addresses</a>, find this address: <b>{% if review.re == 'to' %}{{ review.fromAddress}}{% else %}{{ review.fromTo}}{% endif %}</b>, click the 'Details' button and on the next page click the "sign a message" link.</p>
+
+{% endif %}
+
+<p><b>The review must be signed with this address: {% if review.re == 'to' %} {{ review.fromAddress}} {% else %} {{ review.fromTo}} {% endif %}</b></p>
 
 {% include "HashReviewsTransactionReviewBundle:Default:flashbag.html.twig" %}
 

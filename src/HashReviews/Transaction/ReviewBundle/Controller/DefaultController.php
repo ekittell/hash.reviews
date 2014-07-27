@@ -5,6 +5,7 @@ namespace HashReviews\Transaction\ReviewBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use HashReviews\Transaction\ReviewBundle\Entity\Review;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class DefaultController extends Controller
 {
@@ -45,86 +46,127 @@ class DefaultController extends Controller
 	    return $response;
 	}
 
-    public function indexAction(Request $request)
+	public function initAction($re, $tx_hash, $from_address, $to_address, $sign_link = null) 
+	{
+		$form_data = array(
+					're' => $re,
+					'tx_hash' => $tx_hash,
+		    		'from_address' => $from_address,
+		    		'to_address' => $to_address,
+		    		'sign_link' => $sign_link
+		    	);
+		$new_request = Request::create(
+		    '/index',
+		    'POST',
+		    array(	'form' => $form_data )
+		);
+
+		return $this->forward('HashReviewsTransactionReviewBundle:Default:index', array(
+						    'request' => $new_request,
+						    'init' => true
+						));
+	}
+
+    public function indexAction(Request $request, $init = false)
     {
     	$review = new Review();
     	$form = $this->createFormBuilder($review)
 	        ->add('re', 'choice', array(
         		'choices' => array(
-        			"to" => "SENT bitcoin",
-        			"from" => "RECEIVED bitcoin"
+        			"to" => "SENT",
+        			"from" => "RECEIVED"
         		),
         		'data' => 'to',
         		'expanded' => true,
-        		'label' => "You would like to review a transaction where you:",
+        		'label' => "This review is for a transaction where bitcoin was:",
         		'empty_value' => false))
             ->add('tx_hash', 'text', array('label' => 'Transaction Hash'))
             ->add('from_address', 'text', array('label' => 'From Address'))
             ->add('to_address', 'text', array('label' => 'To Address'))
-            ->add('Continue', 'submit')
+            ->add('write_review', 'submit', array('label' => 'Write Review'))
+            ->add('request_review', 'submit', array('label' => 'Request Review'))
             ->getForm();
 
 	    $form->handleRequest($request);
 
 
-	    if ($form->isValid()) {
+	    if ($form->isValid() || $init) {
+	    	$values = $request->request->get('form');
 
-        	$session = $request->getSession();
+
+        	$session = new Session();
+			$session->start();
         	$tx_data = $form->getData();
 
-    		if ($fp = fopen("http://blockchain.info/rawtx/" . $tx_data->getTxHash(), 'r')) {
+    		if ($fp = @fopen("http://blockchain.info/rawtx/" . $tx_data->getTxHash(), 'r')) {
 				$response = '';
 				while($row = fgets($fp)) {
 					$response.= trim($row)."\n";
 				}
 				$response = json_decode($response,true);
-			} else {
-				throw new \Exception('Unable to connect to BlockChain.info');
-			}
 
-			$total_input = 0;
-			foreach($response['inputs'] as $input) {
-				if($input['prev_out']['addr'] == $tx_data->getFromAddress())
-					$confirm_from = true;
-				$total_input += $input['prev_out']['value'];
-			}
+				$total_input = 0;
+				foreach($response['inputs'] as $input) {
+					if($input['prev_out']['addr'] == $tx_data->getFromAddress())
+						$confirm_from = true;
+					$total_input += $input['prev_out']['value'];
+				}
 
-			$total_output = 0;
-			foreach($response['out'] as $output) {
-				if($output['addr'] == $tx_data->getToAddress())
-					$confirm_to = true;
-				$total_output += $output['value'];
-			}
+				$total_output = 0;
+				foreach($response['out'] as $output) {
+					if($output['addr'] == $tx_data->getToAddress())
+						$confirm_to = true;
+					$total_output += $output['value'];
+				}
 
-			if(isset($response['out'][1])) // not so sure about this logic yet, is [1] always your 'change'?
-				$est_total = $total_input - $response['out'][1]['value'];
-			else
-				$est_total = $total_input;
-
-
-			if($confirm_from && $confirm_to) {
-
-	        	// extra details from api
-	        	$tx_time = new \DateTime();
-	        	$tx_time->setTimestamp($response['time']);
-	        	$tx_data->setTxDate($tx_time);
-
-	        	if ($fp = fopen("https://blockchain.info/q/txfee/" . $tx_data->getTxHash(), 'r'))
-					$fee = stream_get_contents($fp);
+				if(isset($response['out'][1])) // not so sure about this logic yet, is [1] always your 'change'?
+					$est_total = $total_input - $response['out'][1]['value'];
 				else
-					throw new \Exception('Unable to connect to BlockChain.info ' . $fee);
+					$est_total = $total_input;
 
-	        	$tx_data->setTxAmount(($est_total - $fee)/100000000);
 
-	        	$session->set('tx_data', $tx_data);
+				if($confirm_from && $confirm_to) {
+					if(isset($values['request_review'])) {
+						return $this->forward('HashReviewsTransactionReviewBundle:Default:request', array(
+						    'data' => $tx_data
+						));
 
-	        	return $this->redirect($this->generateUrl('enter_review'));
-	        } else {
-	        	$this->get('session')->getFlashBag()->add(
+					} else {
+						// extra details from api
+			        	$tx_time = new \DateTime();
+			        	$tx_time->setTimestamp($response['time']);
+			        	$tx_data->setTxDate($tx_time);
+
+			        	if ($fp = @fopen("https://blockchain.info/q/txfee/" . $tx_data->getTxHash(), 'r'))
+							$fee = stream_get_contents($fp);
+						else
+							$this->get('session')->getFlashBag()->add(
+					            'error',
+					            'Unable to connect to BlockChain.info.'
+					        );
+
+			        	$tx_data->setTxAmount(($est_total - $fee)/100000000);
+
+			        	$session->set('tx_data', $tx_data);
+
+			        	return $this->redirect($this->generateUrl('enter_review'));
+					}
+
+
+		        } else {
+		        	$this->get('session')->getFlashBag()->add(
+			            'error',
+			            'Address(es) not found in transaction.'
+			        );
+		        }
+			} else {
+				$this->get('session')->getFlashBag()->add(
 		            'error',
-		            'Address(es) not found in transaction.'
+		            'We could not find that transaction.  If you\'re sure this hash exists please contact us immediately.  Thanks!'
 		        );
-	        }
+			}
+
+
 	    }
 
         return $this->render('HashReviewsTransactionReviewBundle:Default:index.html.twig', array(
@@ -154,6 +196,7 @@ class DefaultController extends Controller
 	    	$existing_link = $review->getReadUrl($this);
 	    else
 	    	$review = $tx_data;
+
 
 
 
@@ -214,7 +257,8 @@ class DefaultController extends Controller
 
         return $this->render('HashReviewsTransactionReviewBundle:Default:review.html.twig', array(
             'form' => $form->createView(),
-            'existing_link' => $existing_link
+            'existing_link' => $existing_link,
+            'review' => $review
         ));
 
     }
@@ -254,7 +298,7 @@ class DefaultController extends Controller
         $form->handleRequest($request);
 
 	    if ($form->isValid()) { // verify signature with Bitcoind api
-	    	$response = $this->rpcRequest("verifymessage", array($review->getReviewerAddress(), $form->getData()->getSignature(), $form->getData()->getReviewMessageHash()));
+	    	$response = $this->rpcRequest("verifymessage", array($review->getAuthorAddress(), $form->getData()->getSignature(), $form->getData()->getReviewMessageHash()));
 	    	if($response['result']) {
 
 		        $review->setSignature($form->getData()->getSignature());
@@ -304,11 +348,12 @@ class DefaultController extends Controller
 		        ));
 
         return $this->render('HashReviewsTransactionReviewBundle:Default:read.html.twig', array(
-            'review' => $review
+            'review' => $review,
+            'revise_link' => $this->getInitLink( $review )
         ));
     }
 
-    public function searchAction( $search_query )
+    public function reviewsAction( $search_query )
     {
     	$em = $this->getDoctrine()->getManager();
 
@@ -343,12 +388,30 @@ class DefaultController extends Controller
 
     	
 
-        return $this->render('HashReviewsTransactionReviewBundle:Default:search.html.twig', array(
+        return $this->render('HashReviewsTransactionReviewBundle:Default:reviews.html.twig', array(
             'reviews' => $reviews,
             'query' => $search_query,
             'is_tx' => $is_tx
         ));
 
+    }
+
+    public function requestAction( $data ) {
+    	$link = $this->getInitLink( $data );
+    	return $this->render('HashReviewsTransactionReviewBundle:Default:request.html.twig', array(
+            'link' => $link,
+            'data' => $data
+        ));
+    }
+
+    private function getInitLink( $data ) {
+    	return $this->get('router')->generate('init', array(
+            're' => $data->getRe(),
+            'tx_hash' => $data->getTxHash(),
+            'from_address' => $data->getFromAddress(),
+            'to_address' => $data->getToAddress()
+
+        ));
     }
 
 

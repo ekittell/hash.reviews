@@ -1,0 +1,14 @@
+{% include "HashReviewsTransactionReviewBundle:Default:header.html.twig" %}
+
+<h2>Request a Review</h2>
+
+<p>Send this link to request a signed transaction review from someone who 
+{% if data.re == "to" %}
+ sent bitcoin to you.
+{% else %}
+ received bitcoin from you.
+{% endif %}
+<br />
+<a href="{{ link }}">Review Link</a>
+
+{% include "HashReviewsTransactionReviewBundle:Default:footer.html.twig" %}

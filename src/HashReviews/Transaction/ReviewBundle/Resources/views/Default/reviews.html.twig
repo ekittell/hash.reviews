@@ -1,0 +1,14 @@
+{% include "HashReviewsTransactionReviewBundle:Default:header.html.twig" %}
+
+<h2>Search Results</h2>
+<p>For {% if is_tx %} transaction hash {% else %} bitcoin address {% endif %}: {{ query }}</p>
+
+{% include "HashReviewsTransactionReviewBundle:Default:flashbag.html.twig" %}
+
+<ul>
+{% for review in reviews %}
+    <li style="height: 20px; overflow: hidden;"><a href="{{ app.request.baseUrl }}/{{review.re}}/{{review.txHash}}/{{review.fromAddress}}/{{review.toAddress}}">{{review.rating}}/5 - {{ review.review }}</a></li>
+{% endfor %}
+</ul>
+
+{% include "HashReviewsTransactionReviewBundle:Default:footer.html.twig" %}

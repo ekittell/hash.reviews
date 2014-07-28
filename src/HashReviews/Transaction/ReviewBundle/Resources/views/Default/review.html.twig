@@ -5,7 +5,8 @@
 {% include "HashReviewsTransactionReviewBundle:Default:flashbag.html.twig" %}
 
 {% if existing_link %}
-	<p>Review already exists though you may revise it if you'd like. <a href="{{ existing_link }}" target="_blank">Read Existing Review</a>.</p> 
+	<p>Review already exists though you can revise it if you can sign it.<br />
+	<a href="{{ existing_link }}" target="_blank">Read Existing Review</a>.</p> 
 
 {% endif %}
 
@@ -15,6 +16,8 @@
 <p>Please provide an accurate rating and review.  You  may address the {% if review.re == 'to' %}goods or services received{% else %}client/customer{% endif %} and/or the transaction itself.</p>
 
 <p>If you have been pressured to change your review please let us know and/or add that information to your review.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Shill">Shill</a> reviews will be blocked.</b>
 
 
 {% include "HashReviewsTransactionReviewBundle:Default:footer.html.twig" %}

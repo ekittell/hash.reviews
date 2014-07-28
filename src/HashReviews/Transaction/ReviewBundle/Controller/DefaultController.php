@@ -48,6 +48,9 @@ class DefaultController extends Controller
 
 	public function initAction($re, $tx_hash, $from_address, $to_address, $sign_link = null) 
 	{
+		if(strpos($sign_link, "://" . $_SERVER['HTTP_REFERER']) === false);
+			$sign_link = null
+
 		$form_data = array(
 					're' => $re,
 					'tx_hash' => $tx_hash,
@@ -391,6 +394,11 @@ class DefaultController extends Controller
             'is_tx' => $is_tx
         ));
 
+    }
+
+    public function pageAction($slug)
+    {
+        return $this->render('HashReviewsTransactionReviewBundle:Default:page.'.$slug.'.html.twig');
     }
 
     public function requestAction( $data ) {

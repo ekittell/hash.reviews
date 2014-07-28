@@ -16,20 +16,20 @@
 <h4>Transaction Details:</h4>
 <p>Date: {{ review.txDate|date('m/d/Y') }}</p>
 <p>Estimated Amount: {{ review.txAmount }} BTC</p>
-<p>Address: {{ review.reAddress }}<br />
+<p>
 {% if review.re == 'to' %}
-	(This review was authored by someone who sent bitcoin to this address.)
+This review was authored by someone who sent bitcoin to this address:
 {% else %}
-	(This review was authored by someone who received bitcoin from this address.)
-{% endif %}
+This review was authored by someone who received bitcoin from this address:
+{% endif %} <b>{{ review.reAddress }}</b>
 </p>
 <div id="moreLink">
 	<a href="javascript:;" onclick="$('#moreDetails').toggle();$('#moreLink').toggle();">more details</a>
 </div>
 <div id="moreDetails" style="display: none">
-<p>Hash: {{ review.txHash }}</p>
+<p>Hash: <b>{{ review.txHash }}</b></p>
 <p>View on: <a href="https://blockchain.info/tx/{{ review.txHash }}">BlockChain.info</a>
-<p><a href="{{ revise_link }}">Revise Review</a> (You'll need to be able to sign it with address: <b>{{ review.authorAddress }}</b>)</p>
+<p><a href="{{ revise_link }}">Revise Review</a> You'll need to be able to sign it with address: <b>{{ review.authorAddress }}</b></p>
 
 
 <h3>Full Review Message:</h3>

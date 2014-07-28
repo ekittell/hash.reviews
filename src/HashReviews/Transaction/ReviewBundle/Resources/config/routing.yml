@@ -19,3 +19,6 @@ read:
 reviews:
     path:     /reviews/{search_query}
     defaults: { _controller: HashReviewsTransactionReviewBundle:Default:reviews }
+page:
+    path:     /page/{slug}
+    defaults: { _controller: HashReviewsTransactionReviewBundle:Default:page }

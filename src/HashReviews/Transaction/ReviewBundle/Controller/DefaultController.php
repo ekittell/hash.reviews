@@ -48,8 +48,10 @@ class DefaultController extends Controller
 
 	public function initAction($re, $tx_hash, $from_address, $to_address, $sign_link = null) 
 	{
-		if(strpos($sign_link, "://" . $_SERVER['HTTP_REFERER']) === false);
-			$sign_link = null
+		if(!isset($_SERVER['HTTP_REFERER'])) // HTTP_REFERER may not be trustworthy, will need to add token for top security
+			$sign_link = null;
+		elseif(strpos($sign_link, "://" . $_SERVER['HTTP_REFERER']) === false);
+			$sign_link = null;
 
 		$form_data = array(
 					're' => $re,
@@ -244,14 +246,9 @@ class DefaultController extends Controller
 	        else
 	        	$review->setCreatedAt($now);
 
-	        $em = $this->getDoctrine()->getManager();
-		    $em->persist($review);
-		    $em->flush();
-
-
+	        $session->set('tx_data', $review);
 
 		    return $this->redirect($this->generateUrl('sign_hash'));
-
 	        
 	    }
 
@@ -266,9 +263,8 @@ class DefaultController extends Controller
     public function signAction(Request $request)
     {
     	$session = $request->getSession();
-    	$tx_data = $session->get('tx_data');
 
-    	if($tx_data) {
+    	if($tx_data = $session->get('tx_data')) {
 	    	$review = $this->getDoctrine()
 		        ->getRepository('HashReviewsTransactionReviewBundle:Review')
 		        ->find(array(
@@ -277,16 +273,17 @@ class DefaultController extends Controller
 		        	"from_address" => $tx_data->getFromAddress(), 
 		        	"to_address" => $tx_data->getToAddress()
 		        ));
-    	} elseif( $hash = $request->request->get('review_message_hash')) {
-	    	$review = $this->getDoctrine()
-		        ->getRepository('HashReviewsTransactionReviewBundle:Review')
-		        ->findOneByReviewMessageHash($hash);
+		    if(!$review) {
+		    	$review = $tx_data;
+		    }
     	} else {
-    		throw new \Exception('Transaction Not Found');
-    	}
+    			$this->get('session')->getFlashBag()->add(
+		            'error',
+		            'Session timed out.'
+		        );
 
-	    if( !$review )
-	    	throw new \Exception('Review Not Found');
+		        return $this->redirect($this->generateUrl('index'));
+    	}
 
 
 	   	$form = $this->createFormBuilder($review)

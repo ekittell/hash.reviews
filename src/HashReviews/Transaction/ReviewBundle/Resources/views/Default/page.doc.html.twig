@@ -1,0 +1,38 @@
+{% include "HashReviewsTransactionReviewBundle:Default:header.html.twig" %}
+
+<h2>Documentation</h2>
+
+
+<h3>API</h3>
+
+<p>Although we do not provide a full API yet we do provide convenient entry points to our web interface to make it easier to read and create reviews.<p>
+
+<h4>Read Reviews</h4>
+
+<p><b>Single Review:</b><br />
+<b>http://hash.reviews/&lt;re&gt;/&lt;tx_hash&gt;/&lt;from_address&gt;/&lt;to_address&gt;</b><br />
+<b>&lt;re&gt;</b> can be 'to' or 'from', indicates which bitcoin address is being reviewed.
+</p>
+
+<p><b>List of Reviews:</b><br />
+<b>http://hash.reviews/reviews/&lt;address or tx_hash&gt;</b><br />
+<b>&lt;address&gt;</b> is the address reviewed, useful for vendors and providers who always receive bitcoin at the same address.
+</p>
+
+<h4>Create or Update a Review</h4>
+
+<p><b>http://hash.reviews/init/&lt;re&gt;/&lt;tx_hash&gt;/&lt;from_address&gt;/&lt;to_address&gt;/&lt;sign_link&gt;</b><br />
+<b>&lt;sign_link&gt;</b> is optional, it should be a wallet link for signing a message and will be displayed on the sign review page if it matches the referring domain.  The other parameters are just like the single review read link above.  Using this 'init' link allows someone to skip the whole first step of review creation and proceed directly to rating and review entry.  Useful for requesting reviews from your customers.
+</p>
+
+<h3>Reviews for Multiple Addresses?</h3>
+<p>If you normally receive payments on multiple addresses then please contact us about setting up an account that will allow you to link all your addresses and reviews and prove your ownership.</p>
+
+<h3>Technical Details</h3>
+<p>Updating a review over-writes the existing review.  We do not keep a history of review revisions nor a review block chain.</p>
+<p>Transactions with multiple input and output addresses can have multiple reviews which may be useful for single transactions where more than one party is involved in sending or receiving funds, like escrow.</p>
+
+
+
+
+{% include "HashReviewsTransactionReviewBundle:Default:footer.html.twig" %}
